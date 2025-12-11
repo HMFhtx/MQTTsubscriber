@@ -6,6 +6,11 @@ CONFIG = {
     "username": "sunghyun",
     "password": "Hivemq2025",
     "topic_prefix": "SensorData",  # Will be used as SensorData/{device_id}
+
+    # MongoDB
+    MONGO_URI = "mongodb://localhost:27017/"
+    MONGO_DB_NAME = "mqtt_data_db"
+    MONGO_COLLECTION_NAME = "sensor_readings"
     
     # Sensor configuration
     "read_interval": 10,  # seconds between readings

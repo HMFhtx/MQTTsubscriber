@@ -1,61 +1,47 @@
-import ssl
 import json
-from datetime import datetime
 import paho.mqtt.client as mqtt
-from config import CONFIG
+from pymongo import MongoClient
+import config
 
-# Config
-BROKER = CONFIG["broker"]
-PORT = CONFIG["port"]
-USERNAME = CONFIG["username"]
-PASSWORD = CONFIG["password"]
+# 1. Setup MongoDB Connection
+try:
+    mongo_client = MongoClient(config.MONGO_URI)
+    db = mongo_client[config.MONGO_DB_NAME]
+    collection = db[config.MONGO_COLLECTION_NAME]
+    print(f"Connected to MongoDB: {config.MONGO_DB_NAME}")
+except Exception as e:
+    print(f"Error connecting to MongoDB: {e}")
 
-TOPIC = f'{CONFIG["topic_prefix"]}/{CONFIG["device_id"]}'
-
-#JSON file path
-FILE_PATH = "mqtt_messages.json"
-
-#Convert Py obj into JSON. Write recieved message in JSON object
-def save_message(obj):
-    try:
-        with open(FILE_PATH, "a") as f:
-            f.write(json.dumps(obj) + "\n")
-    except Exception as e:
-        print("Error writing to file:", e)
-
-#Connect to broker
-def on_connect(client, userdata, flags, rc):
-    print("Connected with result code", rc)
-    client.subscribe(TOPIC)
-    print(f"Subscribed to topic: {TOPIC}")
-
-#Reciveing message
+# 2. Define the callback for when a message is received
 def on_message(client, userdata, msg):
-    payload = msg.payload.decode()
-    print(f"Received: {payload}")
+    try:
+        # Decode the payload
+        payload_str = msg.payload.decode("utf-8")
+        print(f"Received message: {payload_str}")
+        
+        # Parse JSON data (assuming your MQTT data is JSON)
+        data = json.loads(payload_str)
 
-    message_data = {
-        "topic": msg.topic,
-        "payload": payload,
-        "timestamp": datetime.utcnow().isoformat()
-    }
+        # 3. Insert into MongoDB
+        result = collection.insert_one(data)
+        print(f"Saved to MongoDB with ID: {result.inserted_id}")
+        
+    except json.JSONDecodeError:
+        print("Failed to decode JSON. Saving as raw text.")
+        collection.insert_one({"raw_payload": payload_str, "topic": msg.topic})
+    except Exception as e:
+        print(f"Error saving to database: {e}")
 
-    save_message(message_data)
+def on_connect(client, userdata, flags, rc):
+    print("Connected with result code "+str(rc))
+    client.subscribe(config.MQTT_TOPIC)
 
-
+# 4. MQTT Client Setup
 client = mqtt.Client()
-
-# Required for HiveMQ Cloud
-client.username_pw_set(USERNAME, PASSWORD)
-client.tls_set(
-    cert_reqs=ssl.CERT_REQUIRED,
-    tls_version=ssl.PROTOCOL_TLS_CLIENT
-)
-
 client.on_connect = on_connect
 client.on_message = on_message
 
-print("Connecting to broker...")
-client.connect(BROKER, PORT, keepalive=60)
+client.connect(config.MQTT_BROKER, config.MQTT_PORT, 60)
 
+# Blocking call that processes network traffic, dispatches callbacks and handles reconnecting.
 client.loop_forever()
