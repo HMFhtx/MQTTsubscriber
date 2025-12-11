@@ -1,6 +1,6 @@
 import ssl
 import paho.mqtt.client as mqtt
-from config import CONFIG   # <-- assuming your dictionary is in config.py
+from config import CONFIG
 
 #COnfig
 BROKER = CONFIG["broker"]
@@ -36,7 +36,7 @@ def main():
     # Set username/password
     client.username_pw_set(USERNAME, PASSWORD)
 
-    # HiveMQ Cloud requires TLS
+    # HiveMQ Cloud TLS
     client.tls_set(
         cert_reqs=ssl.CERT_REQUIRED,
         tls_version=ssl.PROTOCOL_TLS_CLIENT
