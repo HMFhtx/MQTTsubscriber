@@ -1,22 +1,22 @@
 CONFIG = {
-    "device_id": "CDA_02",  # Unique identifier for this CDA device
-    "room_id": "living_room",  # Default room identifier for this CDA device
+    "device_id": "CDA_02",  
+    "room_id": "living_room",
     "broker": "884ce594917f4f0bb39af8bf2243097f.s1.eu.hivemq.cloud",
     "port": 8883,
     "username": "sunghyun",
     "password": "Hivemq2025",
-    "topic_prefix": "SensorData",  # Will be used as SensorData/{device_id}
+    "topic_prefix": "SensorData",
 
-    # MongoDB
-    MONGO_URI = "mongodb://localhost:27017/"
-    MONGO_DB_NAME = "mqtt_data_db"
-    MONGO_COLLECTION_NAME = "sensor_readings"
+    # MongoDB Configuration (Fixed syntax)
+    "mongo_uri": "mongodb://localhost:27017/",
+    "mongo_db_name": "mqtt_data_db",
+    "mongo_collection_name": "sensor_readings",
     
     # Sensor configuration
-    "read_interval": 10,  # seconds between readings
-    "read_timeout": 3,    # seconds to wait for a sensor reading before timing out
+    "read_interval": 10,
+    "read_timeout": 3,
     
     # Error handling
-    "max_retries": 3,     # Maximum number of retries for failed sensor readings
-    "retry_delay": 1      # Seconds to wait between retries
+    "max_retries": 3,
+    "retry_delay": 1
 }
