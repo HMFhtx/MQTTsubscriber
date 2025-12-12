@@ -39,10 +39,11 @@ def on_message(client, userdata, msg):
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Connected successfully!")
-        # Subscribe to all topics starting with the prefix
-        topic = f"{conf['topic_prefix']}/#"
+        
+        topic = f"{conf['topic_prefix']}/{conf['device_id']}"
         client.subscribe(topic)
-        print(f"Subscribed to topic: {topic}")
+        
+        print(f"Subscribed to: {topic}")
     else:
         print(f"Connection failed with result code {rc}")
 
