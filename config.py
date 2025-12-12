@@ -1,10 +1,10 @@
 CONFIG = {
     "device_id": "CDA_02",  
     "room_id": "living_room",
-    "broker": "884ce594917f4f0bb39af8bf2243097f.s1.eu.hivemq.cloud",
-    "port": 8883,
-    "username": "sunghyun",
-    "password": "Hivemq2025",
+    "broker": "broker.hivemq.com",
+    "port": 1883,
+    #"username": "sunghyun",
+    #"password": "Hivemq2025",
     "topic_prefix": "SensorData",
 
     # MongoDB Configuration (Fixed syntax)

@@ -51,10 +51,9 @@ client = mqtt.Client()
 
 # --- VITAL FIXES FOR HIVEMQ CLOUD ---
 # Set username and password
-client.username_pw_set(conf["username"], conf["password"])
+#client.username_pw_set(conf["username"], conf["password"])
 
 # Enable SSL/TLS (Required for port 8883)
-client.tls_set(cert_reqs=ssl.CERT_NONE) 
 # ------------------------------------
 
 client.on_connect = on_connect
